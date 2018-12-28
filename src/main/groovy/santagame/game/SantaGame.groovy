@@ -28,7 +28,7 @@ class SantaGame {
     static void runGame(boolean debug, int maxIterations = 0) {
         Game game = new Game(createCards())
 
-        Log.debug("Running algorithm ...\n")
+        Log.info("Running algorithm ...\n")
         long start = System.currentTimeMillis()
 
         def (solutions, iterations) = game.runAlgorithm(start, debug, maxIterations)
@@ -37,13 +37,13 @@ class SantaGame {
         def ms = end - start
         if (iterations) {
             double iterationsPerMs = (iterations / ms).toDouble().round(3)
-            Log.debug("\nRan ${iterations} iterations in ${ms / 1000} seconds (${iterationsPerMs} iterations/ms)")
+            Log.info("\nRan ${iterations} iterations in ${ms / 1000} seconds (${iterationsPerMs} iterations/ms)")
         } else {
-            Log.debug("\nRan algorithm in ${ms / 1000} seconds")
+            Log.info("\nRan algorithm in ${ms / 1000} seconds")
         }
-        Log.debug("Found ${solutions.size()} solutions${solutions ? ':\n' : ''}")
+        Log.info("Found ${solutions.size()} solutions${solutions ? ':\n' : ''}")
         solutions.each {
-            Log.debug(it.toString())
+            Log.info(it.toString())
         }
     }
 
