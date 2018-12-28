@@ -67,6 +67,6 @@ class Card {
 
     @Override
     String toString() {
-        "santagame.model.Card(Right: ${rightPart}, Upper: ${upperPart}, Left: ${leftPart}, Lower: ${lowerPart})"
+        "Card(Right: ${rightPart}, Upper: ${upperPart}, Left: ${leftPart}, Lower: ${lowerPart})"
     }
 }

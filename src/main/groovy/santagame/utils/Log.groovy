@@ -38,6 +38,6 @@ class Log {
     }
 
     static File getLogFile() {
-        new File('C:\\Users\\Stemadsen\\Dropbox\\_Privat\\Programmering\\game.SantaGame\\logs\\game.SantaGame.log')
+        new File('C:\\Users\\Stemadsen\\Dropbox\\_Privat\\Programmering\\SantaGame\\logs\\SantaGame.log')
     }
 }

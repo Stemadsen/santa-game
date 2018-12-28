@@ -63,7 +63,7 @@ class Game {
             toTry = nexts[p]
 
             if (isOnBoard(toTry)) {
-                if (debug) Log.debug("santagame.model.Card is already on board", startTime, p, toTry)
+                if (debug) Log.debug("Card is already on board", startTime, p, toTry)
                 nexts[p]++
                 continue
             }
