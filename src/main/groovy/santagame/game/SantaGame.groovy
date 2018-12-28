@@ -34,10 +34,9 @@ class SantaGame {
         def (solutions, iterations) = game.runAlgorithm(start, debug, maxIterations)
 
         long end = System.currentTimeMillis()
-        def ms = end - start
+        long ms = end - start
         if (iterations) {
-            double iterationsPerMs = (iterations / ms).toDouble().round(3)
-            Log.info("\nRan ${iterations} iterations in ${ms / 1000} seconds (${iterationsPerMs} iterations/ms)")
+            Log.info("\nRan ${iterations} iterations in ${ms / 1000} seconds (${(iterations / ms).toDouble().round(3)} iterations/ms)")
         } else {
             Log.info("\nRan algorithm in ${ms / 1000} seconds")
         }

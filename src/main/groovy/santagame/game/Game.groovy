@@ -19,19 +19,19 @@ class Game {
         this.cards = cards.clone()
     }
 
-    Tuple2<Iterable<Card[]>, Integer> runAlgorithm(long startTime, boolean debug = false, int maxIterations = 0) {
+    Tuple2<Iterable<Card[]>, Integer> runAlgorithm(final long startTime, final boolean debug = false, final int maxIterations = 0) {
         int p = 0 // position being checked
         int toTry // index of the card to try next
         Card card // properly rotated card to try
-        int counter = 0
+        int iterationCount = 0
 
         Log.info("Using card ${firstCard} - ${cards[0]} as first card, rotated ${firstCardRotation} times", startTime)
 
         while (nexts.any { it < 9 }) {
-            counter++
-            if (counter == maxIterations) {
-                Log.info("Exiting after ${counter} iterations", startTime)
-                return [solutions, counter]
+            iterationCount++
+            if (iterationCount == maxIterations) {
+                Log.info("Exiting after ${iterationCount} iterations", startTime)
+                return [solutions, iterationCount]
             }
 
             // First do backtracking
@@ -49,7 +49,7 @@ class Game {
                         } else {
                             // Completely out of options
                             Log.info("All possibilities exhausted, exiting now", startTime)
-                            return [solutions, counter]
+                            return [solutions, iterationCount]
                         }
                     }
                 }
@@ -89,7 +89,7 @@ class Game {
         }
 
         Log.info("[WARNING] Uncontrolled exit happened! p: $p, board: $board, nexts: $nexts", startTime)
-        return [solutions, counter]
+        return [solutions, iterationCount]
     }
 
     /**
