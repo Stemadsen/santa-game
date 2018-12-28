@@ -30,7 +30,7 @@ class Game {
         while (nexts.any { it < 9 }) {
             iterationCount++
             if (iterationCount == maxIterations) {
-                Log.info("Exiting after ${iterationCount} iterations", startTime)
+                Log.info("Stopping after ${iterationCount} iterations", startTime)
                 return [solutions, iterationCount]
             }
 
@@ -197,6 +197,7 @@ class Game {
         p in (1..8) && p % 3 != 0 ? board[p - 1] : null
     }
 
+    // TODO Move
     static String stringify(Card[] cards) {
         cards*.toString().join(",\n")
     }
