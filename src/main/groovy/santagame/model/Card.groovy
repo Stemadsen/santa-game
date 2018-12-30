@@ -7,6 +7,10 @@ class Card {
     private SantaPart[] santaParts // starting from right, moving counter-clockwise
     private int rotation
 
+    /**
+     * @param santaParts an array whose elements correspond to the right, upper, left, and lower part, respectively,
+     * of the card (in that order).
+     */
     Card(SantaPart[] santaParts) {
         assert santaParts.size() == 4
         this.santaParts = santaParts
@@ -72,6 +76,11 @@ class Card {
 
     SantaPart getRightPart() {
         santaParts[-rotation % 4]
+    }
+
+    @Override
+    Card clone() {
+        return new Card([rightPart, upperPart, leftPart, lowerPart] as SantaPart[])
     }
 
     @Override

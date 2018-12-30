@@ -4,17 +4,15 @@ import santagame.model.Card
 import santagame.utils.Log
 
 class Game {
-    Card[] originalCards // never changes
-    Card[] cards // the current deck, including order and rotation
-    int[] nexts = new int[9]
+    Card[] cards // the current deck, including rotation
+    int[] nexts = new int[9] // index of the next card to try for each position
     int startingCardRotation = 0 // rotation of the card being used at position 0
     Card[] board = new Card[9]
     int[] boardIndices = (0..8).collect { -1 }
 
     Game(Card[] cards) {
         assert cards.size() == 9
-        originalCards = cards.clone()
-        this.cards = cards.clone()
+        this.cards = cards*.clone()
     }
 
     GameResult runAlgorithm(final long startTime, final boolean debug = false, final int maxIterations = 0) {
@@ -71,9 +69,9 @@ class Game {
                 placeOnBoard(card, toTry, p)
                 if (p == 8) {
                     // We just placed the last card!
-                    assert !result.solutions.contains(board.clone()): "Solution already exists!"
-                    result.solutions << board.clone()
-                    result.solutionIndices << boardIndices.clone()
+                    assert !result.solutions.contains(board): "Solution already exists!"
+                    result.solutions.add(board*.clone() as Card[])
+                    result.solutionIndices << boardIndices
                     Log.info("New solution found: ${boardIndices}", startTime)
                     removeFromBoard(8) // this is necessary since we can't do normal backtracking
                     continue

@@ -99,6 +99,22 @@ class CardSpec extends Specification {
             thrown(AssertionError)
     }
 
+    def "cloning should preserve SantaParts and their order"() {
+        given:
+            Card original = TEST_CARD.rotateToDegrees(2)
+
+        when:
+            Card clone = original.clone()
+
+        then:
+            with(clone) {
+                rightPart == original.rightPart
+                upperPart == original.upperPart
+                leftPart == original.leftPart
+                lowerPart == original.lowerPart
+            }
+    }
+
     def "test getSantaParts"() {
         expect:
             TEST_CARD.santaParts == TEST_SANTA_PARTS
