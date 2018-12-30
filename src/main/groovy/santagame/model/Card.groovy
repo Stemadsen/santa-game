@@ -5,7 +5,7 @@ import groovy.transform.EqualsAndHashCode
 @EqualsAndHashCode
 class Card {
     private SantaPart[] santaParts // starting from right, moving counter-clockwise
-    int rotation
+    private int rotation
 
     Card(SantaPart[] santaParts) {
         assert santaParts.size() == 4
@@ -45,6 +45,12 @@ class Card {
             }
             rotation = (rotation + degree) % 4
         }
+        return this
+    }
+
+    Card rotateToDegrees(int degrees) {
+        assert degrees in (0..3): "Rotation degree must be between 0 and 3"
+        rotation = degrees
         return this
     }
 

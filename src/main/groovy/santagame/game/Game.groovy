@@ -10,7 +10,6 @@ class Game {
     int startingCardRotation = 0 // rotation of the card being used at position 0
     Card[] board = new Card[9]
     int[] boardIndices = (0..8).collect { -1 }
-    AlgorithmOutput output = new AlgorithmOutput()
 
     Game(Card[] cards) {
         assert cards.size() == 9
@@ -18,16 +17,17 @@ class Game {
         this.cards = cards.clone()
     }
 
-    AlgorithmOutput runAlgorithm(final long startTime, final boolean debug = false, final int maxIterations = 0) {
+    GameResult runAlgorithm(final long startTime, final boolean debug = false, final int maxIterations = 0) {
         int p = 0 // position to check
         int toTry // index of the card to try next
         Card card // properly rotated card to try
+        GameResult result = new GameResult()
 
         while (nexts.any { it < 9 }) {
-            output.iterationsRun++
-            if (output.iterationsRun == maxIterations) {
-                Log.info("Stopping after ${output.iterationsRun} iterations", startTime)
-                return output
+            result.iterations++
+            if (result.iterations == maxIterations) {
+                Log.info("Stopping after ${result.iterations} iterations", startTime)
+                return result
             }
 
             // First do backtracking
@@ -36,7 +36,7 @@ class Game {
                 if (p == 0) {
                     // Completely out of options
                     Log.info("All possibilities exhausted, exiting now", startTime)
-                    return output
+                    return result
                 }
                 // Backtrack
                 if (debug) Log.debug("Backtracking", startTime, p, 9)
@@ -55,7 +55,7 @@ class Game {
 
             card = getRotatedCard(p)
             if (p == 0) {
-                // If this is the first position, we want to try rotating the card before replacing it
+                // We should try rotating the card before replacing it
                 if (rotateStartingCard()) {
                     if (debug) Log.debug("Changed next starting card rotation to ${startingCardRotation}", startTime, p, toTry)
                 } else {
@@ -71,9 +71,9 @@ class Game {
                 placeOnBoard(card, toTry, p)
                 if (p == 8) {
                     // We just placed the last card!
-                    assert !output.solutions.contains(board.clone()): "Solution already exists!"
-                    output.solutions << board.clone()
-                    output.solutionIndices << boardIndices.clone()
+                    assert !result.solutions.contains(board.clone()): "Solution already exists!"
+                    result.solutions << board.clone()
+                    result.solutionIndices << boardIndices.clone()
                     Log.info("New solution found: ${boardIndices}", startTime)
                     removeFromBoard(8) // this is necessary since we can't do normal backtracking
                     continue
@@ -145,22 +145,15 @@ class Game {
     Card getRotatedCard(int p) {
         Card card = cards[nexts[p]]
         if (p == 0) {
-            // Manual rotation
-            card.rotation = startingCardRotation
-            return card
+            return card.rotateToDegrees(startingCardRotation)
         }
         Card leftNeighbor = getLeftNeighbor(p)
         if (leftNeighbor) {
             return card.rotateToLeftColor(leftNeighbor.rightPart.color)
         }
         Card upperNeighbor = getUpperNeighbor(p)
-        if (upperNeighbor) {
-            return card.rotateToUpperColor(upperNeighbor.lowerPart.color)
-        }
-        // This should never happen
-        String warning = "[WARNING] No neighbors for position $p! Board: $board, nexts: $nexts"
-        Log.info(warning)
-        throw new RuntimeException(warning)
+        // If p > 0 and there is no left neighbor, then there must be an upper neighbor
+        return card.rotateToUpperColor(upperNeighbor.lowerPart.color)
     }
 
     /**

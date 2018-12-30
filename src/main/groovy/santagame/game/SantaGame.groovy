@@ -25,14 +25,14 @@ class SantaGame {
         Log.info("Running algorithm ...\n")
         long start = System.currentTimeMillis()
 
-        AlgorithmOutput output = game.runAlgorithm(start, debug, maxIterations)
+        GameResult result = game.runAlgorithm(start, debug, maxIterations)
 
         long end = System.currentTimeMillis()
         long ms = end - start
         Log.info("\nRan algorithm in ${ms / 1000} seconds")
-        Log.info("\nRan ${output.iterationsRun} iterations total (${(output.iterationsRun / ms).toDouble().round(3)} iterations/ms)")
-        Log.info("\nFound ${output.solutions.size()} solutions:\n")
-        output.solutions.each {
+        Log.info("\nRan ${result.iterations} iterations total (${(result.iterations / ms).toDouble().round(3)} iterations/ms)")
+        Log.info("\nFound ${result.solutions.size()} solutions:\n")
+        result.solutions.each {
             Log.info("${it.toString()}")
         }
     }

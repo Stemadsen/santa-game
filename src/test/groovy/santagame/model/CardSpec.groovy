@@ -2,6 +2,7 @@ package santagame.model
 
 import santagame.game.SantaGame
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import static santagame.model.Color.GREEN
 import static santagame.model.Color.RED
@@ -65,6 +66,37 @@ class CardSpec extends Specification {
 
         where:
             _color << Color.values()
+    }
+
+    @Unroll
+    def "it should correctly rotate to rotation degree #_degree"() {
+        given:
+            Card card = TEST_CARD
+
+        when:
+            Card rotatedCard = card.rotateToDegrees(_degree)
+
+        then:
+            rotatedCard == card
+            with(card) {
+                rotation == _degree
+                lowerPart.color == TEST_SANTA_PARTS[3 - _degree].color
+                lowerPart.bodyPart == TEST_SANTA_PARTS[3 - _degree].bodyPart
+            }
+
+        where:
+            _degree << (0..3)
+    }
+
+    def "it should not rotate to a negative rotation degree"() {
+        given:
+            Card card = TEST_CARD
+
+        when:
+            card.rotateToDegrees(-1)
+
+        then:
+            thrown(AssertionError)
     }
 
     def "test getSantaParts"() {
