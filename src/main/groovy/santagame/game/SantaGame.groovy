@@ -16,13 +16,7 @@ class SantaGame {
         boolean DEBUG = false
         int MAX_ITERATIONS = 100000
 
-        init()
         runGame(DEBUG)
-    }
-
-    static void init() {
-        File logFile = Log.logFile
-        if (logFile.exists()) logFile.delete()
     }
 
     static void runGame(boolean debug, int maxIterations = 0) {

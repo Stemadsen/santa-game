@@ -57,10 +57,10 @@ class Game {
             if (p == 0) {
                 // If this is the first position, we want to try rotating the card before replacing it
                 if (rotateStartingCard()) {
-                    Log.info("Changed next starting card rotation to ${startingCardRotation}", startTime)
+                    Log.debug("Changed next starting card rotation to ${startingCardRotation}", startTime, p, toTry)
                 } else {
                     changeStartingCard()
-                    Log.info("Changed next starting card index to ${nexts[0]}", startTime)
+                    Log.debug("Changed next starting card index to ${nexts[0]}", startTime, p, toTry)
                 }
             } else {
                 nexts[p]++
@@ -86,8 +86,9 @@ class Game {
             }
         }
 
-        Log.info("[WARNING] Uncontrolled exit happened! p: $p, board: $board, nexts: $nexts", startTime)
-        return output
+        String warning = "[WARNING] Uncontrolled exit happened! p: $p, board: $board, nexts: $nexts"
+        Log.info(warning, startTime)
+        throw new RuntimeException(warning)
     }
 
     /**
