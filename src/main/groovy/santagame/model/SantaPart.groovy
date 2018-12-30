@@ -1,5 +1,8 @@
 package santagame.model
 
+import groovy.transform.EqualsAndHashCode
+
+@EqualsAndHashCode
 class SantaPart {
     Color color
     BodyPart bodyPart

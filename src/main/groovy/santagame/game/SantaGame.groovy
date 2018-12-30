@@ -31,18 +31,15 @@ class SantaGame {
         Log.info("Running algorithm ...\n")
         long start = System.currentTimeMillis()
 
-        def (solutions, iterations) = game.runAlgorithm(start, debug, maxIterations)
+        AlgorithmOutput output = game.runAlgorithm(start, debug, maxIterations)
 
         long end = System.currentTimeMillis()
         long ms = end - start
-        if (iterations) {
-            Log.info("\nRan ${iterations} iterations in ${ms / 1000} seconds (${(iterations / ms).toDouble().round(3)} iterations/ms)")
-        } else {
-            Log.info("\nRan algorithm in ${ms / 1000} seconds")
-        }
-        Log.info("Found ${solutions.size()} solutions${solutions ? ':\n' : ''}")
-        solutions.each {
-            Log.info(it.toString())
+        Log.info("\nRan algorithm in ${ms / 1000} seconds")
+        Log.info("\nRan ${output.iterationsRun} iterations total (${(output.iterationsRun / ms).toDouble().round(3)} iterations/ms)")
+        Log.info("\nFound ${output.solutions.size()} solutions:\n")
+        output.solutions.each {
+            Log.info("${it.toString()}")
         }
     }
 

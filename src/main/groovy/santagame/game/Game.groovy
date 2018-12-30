@@ -6,12 +6,11 @@ import santagame.utils.Log
 class Game {
     Card[] originalCards // never changes
     Card[] cards // the current deck, including order and rotation
-    int firstCard = 0 // index of the card original card acting as the first card
-    int firstCardRotation = 0 // rotateFirstCard() didn't update the card instance ...
+    int[] nexts = new int[9]
+    int startingCardRotation = 0 // rotation of the card being used at position 0
     Card[] board = new Card[9]
     int[] boardIndices = (0..8).collect { -1 }
-    int[] nexts = new int[9]
-    Iterable<Card[]> solutions = new ArrayList<Card[]>()
+    AlgorithmOutput output = new AlgorithmOutput()
 
     Game(Card[] cards) {
         assert cards.size() == 9
@@ -19,42 +18,28 @@ class Game {
         this.cards = cards.clone()
     }
 
-    Tuple2<Iterable<Card[]>, Integer> runAlgorithm(final long startTime, final boolean debug = false, final int maxIterations = 0) {
-        int p = 0 // position being checked
+    AlgorithmOutput runAlgorithm(final long startTime, final boolean debug = false, final int maxIterations = 0) {
+        int p = 0 // position to check
         int toTry // index of the card to try next
         Card card // properly rotated card to try
-        int iterationCount = 0
-
-        Log.info("Using card ${firstCard} - ${cards[0]} as first card, rotated ${firstCardRotation} times", startTime)
 
         while (nexts.any { it < 9 }) {
-            iterationCount++
-            if (iterationCount == maxIterations) {
-                Log.info("Stopping after ${iterationCount} iterations", startTime)
-                return [solutions, iterationCount]
+            output.iterationsRun++
+            if (output.iterationsRun == maxIterations) {
+                Log.info("Stopping after ${output.iterationsRun} iterations", startTime)
+                return output
             }
 
             // First do backtracking
             while (nexts[p] == 9) {
                 // Out of options for this p
                 if (p == 0) {
-                    // Try something else at the first position
-                    if (rotateFirstCard()) {
-                        Log.info("Starting over with first card rotated ${firstCardRotation} time(s)", startTime)
-                        continue
-                    } else {
-                        if (changeFirstCard()) {
-                            Log.info("Starting over with card ${firstCard} - ${cards[0]} as first card", startTime)
-                            continue
-                        } else {
-                            // Completely out of options
-                            Log.info("All possibilities exhausted, exiting now", startTime)
-                            return [solutions, iterationCount]
-                        }
-                    }
+                    // Completely out of options
+                    Log.info("All possibilities exhausted, exiting now", startTime)
+                    return output
                 }
                 // Backtrack
-                if (debug) Log.debug("Backtracking", startTime, p, 8)
+                if (debug) Log.debug("Backtracking", startTime, p, 9)
                 nexts[p] = 0
                 p--
                 removeFromBoard(p)
@@ -69,27 +54,40 @@ class Game {
             }
 
             card = getRotatedCard(p)
-            nexts[p]++
+            if (p == 0) {
+                // If this is the first position, we want to try rotating the card before replacing it
+                if (rotateStartingCard()) {
+                    Log.info("Changed next starting card rotation to ${startingCardRotation}", startTime)
+                } else {
+                    changeStartingCard()
+                    Log.info("Changed next starting card index to ${nexts[0]}", startTime)
+                }
+            } else {
+                nexts[p]++
+            }
 
             if (isValid(card, p)) {
                 if (debug) Log.debug("Placing card", startTime, p, toTry)
                 placeOnBoard(card, toTry, p)
                 if (p == 8) {
                     // We just placed the last card!
-                    solutions << board.clone()
-                    Log.info("New solution found:\n${stringify(board)}", startTime)
-                } else {
-                    // Continue to next position
-                    p++
+                    assert !output.solutions.contains(board.clone()): "Solution already exists!"
+                    output.solutions << board.clone()
+                    output.solutionIndices << boardIndices.clone()
+                    Log.info("New solution found: ${boardIndices}\n${stringify(board)}", startTime)
+                    removeFromBoard(8) // this is necessary since we can't do normal backtracking
+                    continue
                 }
+                // Advance to next position
+                p++
             } else {
-                // Can't place card
+                // Can't place card, try the next one
                 if (debug) Log.debug("Can't place card", startTime, p, toTry)
             }
         }
 
         Log.info("[WARNING] Uncontrolled exit happened! p: $p, board: $board, nexts: $nexts", startTime)
-        return [solutions, iterationCount]
+        return output
     }
 
     /**
@@ -117,29 +115,23 @@ class Game {
     }
 
     /**
-     * Increases the first card rotation by 1 if it hasn't already been increased 3 times, and in this case resets
-     * the nexts array.
-     * @return whether any action was taken.
+     * Increases the starting card rotation by 1, unless it has already been rotated 3 times.
+     * @return whether the rotation was increased.
      */
-    boolean rotateFirstCard() {
-        if (firstCardRotation == 3) return false
-        firstCardRotation++
-        nexts = new int[9]
+    boolean rotateStartingCard() {
+        // Note: No need to reset nexts array, since it will have been done during backtracking
+        if (startingCardRotation == 3) return false
+        startingCardRotation++
         return true
     }
 
     /**
-     * Increases the first card index by 1 if it hasn't already been increased 8 times, and in this case resets
-     * the cards and nexts arrays along with the first card rotation.
-     * @return whether any action was taken.
+     * Increases the starting card index by 1 and resets the starting card rotation.
      */
-    boolean changeFirstCard() {
-        if (firstCard == 8) return false
-        firstCard++
-        cards = (firstCard..firstCard + 8).collect { originalCards[it % 9] }
-        nexts = new int[9]
-        firstCardRotation = 0
-        return true
+    void changeStartingCard() {
+        // Note: No need to reset nexts array, since it will have been done during backtracking
+        nexts[0]++
+        startingCardRotation = 0
     }
 
     /**
@@ -151,9 +143,9 @@ class Game {
      */
     Card getRotatedCard(int p) {
         Card card = cards[nexts[p]]
-        if (p == 0 && nexts[p] == 0) {
-            // Manual rotation (hack)
-            card.rotation = firstCardRotation
+        if (p == 0) {
+            // Manual rotation
+            card.rotation = startingCardRotation
             return card
         }
         Card leftNeighbor = getLeftNeighbor(p)
@@ -164,8 +156,10 @@ class Game {
         if (upperNeighbor) {
             return card.rotateToUpperColor(upperNeighbor.lowerPart.color)
         }
-        // No neighbors
-        return card
+        // This should never happen
+        String warning = "[WARNING] No neighbors for position $p! Board: $board, nexts: $nexts"
+        Log.info(warning)
+        throw new RuntimeException(warning)
     }
 
     /**

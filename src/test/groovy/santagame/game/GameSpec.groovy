@@ -71,16 +71,60 @@ class GameSpec extends Specification {
             [_i, _p] << [(0..8), (0..8)].combinations()
     }
 
-    void "it should rotate first card exactly 3 times"() {
-        expect:
-            3.times { assert game.rotateFirstCard() }
-            !game.rotateFirstCard()
+    void "it should correctly rotate first card up to 3 times, but not 4"() {
+        given:
+            game.startingCardRotation = 0
+
+        when: 'we try rotating the starting card'
+            boolean rotated = game.rotateStartingCard()
+
+        then: 'the card was rotated'
+            rotated
+            game.startingCardRotation == 1
+
+        when: 'we try rotating the starting card a second time'
+            rotated = game.rotateStartingCard()
+
+        then: 'the card was rotated'
+            rotated
+            game.startingCardRotation == 2
+
+        when: 'we try rotating the starting card a third time'
+            rotated = game.rotateStartingCard()
+
+        then: 'the card was rotated'
+            rotated
+            game.startingCardRotation == 3
+
+        when: 'we try rotating the starting card a fourth time'
+            rotated = game.rotateStartingCard()
+
+        then: 'the card was not rotated'
+            !rotated
+            game.startingCardRotation == 3
     }
 
-    void "it should change first card exactly 8 times"() {
-        expect:
-            8.times { assert game.changeFirstCard() }
-            !game.changeFirstCard()
+    void "it should correctly change first card up to 8 times"() {
+        given:
+            game.nexts[0] = 0
+
+        and: 'the starting card has been rotated'
+            game.rotateStartingCard()
+
+        when: 'we change the starting card'
+            game.changeStartingCard()
+
+        then: 'the starting card index has been increased by 1'
+            game.nexts[0] == 1
+
+        and: 'the starting card rotation has been reset'
+            game.startingCardRotation == 0
+
+        when: 'we change the starting card 7 more times'
+            7.times { game.changeStartingCard() }
+
+        then: 'the starting card index has been increased by 7'
+            game.nexts[0] == 8
     }
 
     void "it should correctly return rotated card for left neighbor"() {

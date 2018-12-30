@@ -1,5 +1,8 @@
 package santagame.model
 
+import groovy.transform.EqualsAndHashCode
+
+@EqualsAndHashCode
 class Card {
     private SantaPart[] santaParts // starting from right, moving counter-clockwise
     int rotation
