@@ -57,10 +57,10 @@ class Game {
             if (p == 0) {
                 // If this is the first position, we want to try rotating the card before replacing it
                 if (rotateStartingCard()) {
-                    Log.debug("Changed next starting card rotation to ${startingCardRotation}", startTime, p, toTry)
+                    if (debug) Log.debug("Changed next starting card rotation to ${startingCardRotation}", startTime, p, toTry)
                 } else {
                     changeStartingCard()
-                    Log.debug("Changed next starting card index to ${nexts[0]}", startTime, p, toTry)
+                    if (debug) Log.debug("Changed next starting card index to ${nexts[0]}", startTime, p, toTry)
                 }
             } else {
                 nexts[p]++
