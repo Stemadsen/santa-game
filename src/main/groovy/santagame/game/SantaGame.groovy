@@ -22,15 +22,15 @@ class SantaGame {
     static void runGame(boolean debug, int maxIterations = 0) {
         Game game = new Game(createCards())
 
-        Log.info("Running algorithm ...\n")
+        Log.info("Playing game ...\n")
         long start = System.currentTimeMillis()
 
-        GameResult result = game.runAlgorithm(start, debug, maxIterations)
+        GameResult result = game.playGame(start, debug, maxIterations)
 
         long end = System.currentTimeMillis()
         long ms = end - start
-        Log.info("\nRan algorithm in ${ms / 1000} seconds")
-        Log.info("\nRan ${result.iterations} iterations total (${(result.iterations / ms).toDouble().round(3)} iterations/ms)")
+        Log.info("\nPlayed game in ${ms / 1000} seconds")
+        Log.info("\nRan ${result.iterations} iterations (${(result.iterations / ms).toDouble().round(3)} iterations/ms)")
         Log.info("\nFound ${result.solutions.size()} solutions:\n")
         result.solutions.each {
             Log.info("${it.toString()}")

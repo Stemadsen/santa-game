@@ -15,7 +15,7 @@ class Game {
         this.cards = cards*.clone()
     }
 
-    GameResult runAlgorithm(final long startTime, final boolean debug = false, final int maxIterations = 0) {
+    GameResult playGame(final long startTime, final boolean debug = false, final int maxIterations = 0) {
         int p = 0 // position to check
         int toTry // index of the card to try next
         Card card // properly rotated card to try
