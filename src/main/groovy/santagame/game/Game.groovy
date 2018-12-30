@@ -74,7 +74,7 @@ class Game {
                     assert !output.solutions.contains(board.clone()): "Solution already exists!"
                     output.solutions << board.clone()
                     output.solutionIndices << boardIndices.clone()
-                    Log.info("New solution found: ${boardIndices}\n${stringify(board)}", startTime)
+                    Log.info("New solution found: ${boardIndices}", startTime)
                     removeFromBoard(8) // this is necessary since we can't do normal backtracking
                     continue
                 }
@@ -190,10 +190,5 @@ class Game {
 
     Card getLeftNeighbor(int p) {
         p in (1..8) && p % 3 != 0 ? board[p - 1] : null
-    }
-
-    // TODO Move
-    static String stringify(Card[] cards) {
-        cards*.toString().join(",\n")
     }
 }
