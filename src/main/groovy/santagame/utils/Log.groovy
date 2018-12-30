@@ -3,7 +3,7 @@ package santagame.utils
 class Log {
 
     static final String UTF8 = 'UTF-8'
-    private static final String LOG_DIR_NAME = 'C:\\Users\\Stemadsen\\Dropbox\\_Privat\\Programmering\\SantaGame\\logs'
+    private static final String LOG_DIR_NAME = new File('.\\logs')
     private static final String LOG_FILE_NAME = 'SantaGame.log'
     private static File logFile
 
