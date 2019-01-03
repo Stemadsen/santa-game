@@ -17,13 +17,41 @@ class CardSpec extends Specification {
             new SantaPart(YELLOW, BodyPart.LEGS),
     ]
 
-    static final Card TEST_CARD = new Card(TEST_SANTA_PARTS)
+    static final Card TEST_CARD = new Card(TEST_SANTA_PARTS, 4)
 
     Card[] cards
 
     void setup() {
         cards = SantaGame.createCards()
         resetTestCardRotation()
+    }
+
+    def "it should instantiate Card with index 0..8 and 4 SantaParts"() {
+        when:
+            Card card = new Card(TEST_SANTA_PARTS, _index)
+
+        then:
+            card.index == _index
+            card.santaParts == TEST_SANTA_PARTS
+
+        where:
+            _index << (0..8)
+    }
+
+    @Unroll
+    def "it should throw an error when calling constructor with index #_index and #_santaParts SantaParts"() {
+        when:
+            new Card((1.._santaParts).collect { null } as SantaPart[], _index)
+
+        then:
+            thrown(AssertionError)
+
+        where:
+            _index | _santaParts
+            0      | 3
+            0      | 5
+            -1     | 4
+            9      | 4
     }
 
     def "it should correctly rotate to a specific color on the left"() {
@@ -99,7 +127,7 @@ class CardSpec extends Specification {
             thrown(AssertionError)
     }
 
-    def "cloning should preserve SantaParts and their order"() {
+    def "cloning should preserve SantaParts and their order + index"() {
         given:
             Card original = TEST_CARD.rotateToDegrees(2)
 
@@ -112,6 +140,7 @@ class CardSpec extends Specification {
                 upperPart == original.upperPart
                 leftPart == original.leftPart
                 lowerPart == original.lowerPart
+                index == original.index
             }
     }
 

@@ -4,11 +4,10 @@ import santagame.model.Card
 import santagame.utils.Log
 
 class Game {
-    Card[] cards // the current deck, including rotation
+    Card[] cards // the current deck
     int[] nexts = new int[9] // index of the next card to try for each position
     int startingCardRotation = 0 // rotation of the card being used at position 0
     Card[] board = new Card[9]
-    int[] boardIndices = (0..8).collect { -1 }
 
     Game(Card[] cards) {
         assert cards.size() == 9
@@ -66,13 +65,12 @@ class Game {
 
             if (isValid(card, p)) {
                 if (debug) Log.debug("Placing card", startTime, p, toTry)
-                placeOnBoard(card, toTry, p)
+                placeOnBoard(card, p)
                 if (p == 8) {
                     // We just placed the last card!
                     assert !result.solutions.contains(board): "Solution already exists!"
                     result.solutions.add(board*.clone() as Card[])
-                    result.solutionIndices << boardIndices
-                    Log.info("New solution found: ${boardIndices}", startTime)
+                    Log.info("New solution found: ${board*.index}", startTime)
                     removeFromBoard(8) // this is necessary since we can't do normal backtracking
                     continue
                 }
@@ -94,22 +92,20 @@ class Game {
      * @return true iff the i'th card is on the board.
      */
     boolean isOnBoard(int i) {
-        boardIndices.contains(i)
+        board*.index.contains(i)
     }
 
     /**
-     * Places card, with index i, on the board at position p.
+     * Places card on the board at position p.
      */
-    void placeOnBoard(Card card, int i, int p) {
-        boardIndices[p] = i
+    void placeOnBoard(Card card, int p) {
         board[p] = card
     }
 
     /**
-     * Removes the card currently in position p from the board.
+     * Removes the card currently at position p from the board.
      */
     void removeFromBoard(int p) {
-        boardIndices[p] = -1
         board[p] = null
     }
 

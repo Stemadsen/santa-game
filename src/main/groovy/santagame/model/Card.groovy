@@ -6,18 +6,24 @@ import groovy.transform.EqualsAndHashCode
 class Card {
     private SantaPart[] santaParts // starting from right, moving counter-clockwise
     private int rotation
+    int index
 
     /**
      * @param santaParts an array whose elements correspond to the right, upper, left, and lower part, respectively,
      * of the card (in that order).
+     * @param index the card's index in the deck, between 0 and 8.
      */
-    Card(SantaPart[] santaParts) {
+    Card(SantaPart[] santaParts, int index = 0) {
+        assert index in (0..8)
         assert santaParts.size() == 4
+        this.index = index
         this.santaParts = santaParts
     }
 
     /**
      * Rotates the card so that the given color faces left.
+     * @param leftColor the color to face left.
+     * @return this card.
      */
     Card rotateToLeftColor(Color leftColor) {
         if (leftPart.color != leftColor) {
@@ -36,6 +42,8 @@ class Card {
 
     /**
      * Rotates the card so that the given color faces up.
+     * @param upperColor the color to face up.
+     * @return this card.
      */
     Card rotateToUpperColor(Color upperColor) {
         if (upperPart.color != upperColor) {
@@ -52,6 +60,11 @@ class Card {
         return this
     }
 
+    /**
+     * Rotates the card a number of degrees counter-clockwise.
+     * @param degrees the number of degrees to rotate the card, between 0 and 3.
+     * @return this card.
+     */
     Card rotateToDegrees(int degrees) {
         assert degrees in (0..3): "Rotation degree must be between 0 and 3"
         rotation = degrees
@@ -80,11 +93,11 @@ class Card {
 
     @Override
     Card clone() {
-        return new Card([rightPart, upperPart, leftPart, lowerPart] as SantaPart[])
+        return new Card([rightPart, upperPart, leftPart, lowerPart] as SantaPart[], index)
     }
 
     @Override
     String toString() {
-        "Card(Right: ${rightPart}, Upper: ${upperPart}, Left: ${leftPart}, Lower: ${lowerPart})"
+        "Card(${index}, Right: ${rightPart}, Upper: ${upperPart}, Left: ${leftPart}, Lower: ${lowerPart})"
     }
 }

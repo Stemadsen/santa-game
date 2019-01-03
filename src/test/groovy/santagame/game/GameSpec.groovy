@@ -25,7 +25,7 @@ class GameSpec extends Specification {
             !game.isOnBoard(i)
 
         when:
-            game.boardIndices[3] = i
+            game.board[4] = cards[i]
 
         then:
             game.isOnBoard(i)
@@ -44,10 +44,9 @@ class GameSpec extends Specification {
             !game.isOnBoard(i)
 
         when:
-            game.placeOnBoard(card, i, p)
+            game.placeOnBoard(card, p)
 
         then:
-            game.boardIndices[p] == i
             game.board[p] == card
 
         where:
@@ -59,13 +58,13 @@ class GameSpec extends Specification {
             int i = _i as int
             int p = _p as int
             Card card = cards[i]
-            game.placeOnBoard(card, i, p)
+            game.placeOnBoard(card, p)
 
         when:
             game.removeFromBoard(p)
 
         then:
-            assertBoardPositionEmpty(p)
+            !game.board[p]
 
         where:
             [_i, _p] << [(0..8), (0..8)].combinations()
@@ -130,7 +129,7 @@ class GameSpec extends Specification {
     void "it should correctly return rotated card for left neighbor"() {
         given:
             Color color = _color as Color
-            game.placeOnBoard(cardWithRightPart(color), -1, 0)
+            game.placeOnBoard(cardWithRightPart(color), 0)
 
         when:
             Card result = game.getRotatedCard(1)
@@ -145,9 +144,9 @@ class GameSpec extends Specification {
     void "it should correctly return rotated card for upper neighbor"() {
         given:
             Color color = _color as Color
-            game.placeOnBoard(cardWithLowerPart(color), -1, 0)
-            game.placeOnBoard(cards[1], 1, 1)
-            game.placeOnBoard(cards[2], 2, 2)
+            game.placeOnBoard(cardWithLowerPart(color), 0)
+            game.placeOnBoard(cards[1], 1)
+            game.placeOnBoard(cards[2], 2)
 
         when:
             Card result = game.getRotatedCard(3)
@@ -163,7 +162,7 @@ class GameSpec extends Specification {
         given: 'a first card whose right part is blue legs'
             BodyPart bodyPart = _bodyPart as BodyPart
             Color color = _color as Color
-            game.placeOnBoard(cardWithRightPart(BLUE, LEGS), -1, 0)
+            game.placeOnBoard(cardWithRightPart(BLUE, LEGS), 0)
 
         when: 'we check if a card is valid to the right of the first card'
             boolean valid = game.isValid(cardWithLeftPart(color, bodyPart), 1)
@@ -179,9 +178,9 @@ class GameSpec extends Specification {
         given: 'a first card whose lower part is yellow torso'
             BodyPart bodyPart = _bodyPart as BodyPart
             Color color = _color as Color
-            game.placeOnBoard(cardWithLowerPart(YELLOW, TORSO), -1, 0)
-            game.placeOnBoard(cards[1], 1, 1)
-            game.placeOnBoard(cards[2], 2, 2)
+            game.placeOnBoard(cardWithLowerPart(YELLOW, TORSO), 0)
+            game.placeOnBoard(cards[1], 1)
+            game.placeOnBoard(cards[2], 2)
 
         when: 'we check if a card is valid below the first card'
             boolean valid = game.isValid(cardWithUpperPart(color, bodyPart), 3)
@@ -236,10 +235,5 @@ class GameSpec extends Specification {
                 new SantaPart(otherColors[2], otherBodyPart),
                 new SantaPart(color, bodyPart),
         ] as SantaPart[])
-    }
-
-    void assertBoardPositionEmpty(int p) {
-        assert !game.board[p]
-        assert game.boardIndices[p] == -1
     }
 }

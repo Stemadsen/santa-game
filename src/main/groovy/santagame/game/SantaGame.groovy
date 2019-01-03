@@ -14,7 +14,6 @@ import static santagame.model.Color.YELLOW
 class SantaGame {
     static void main(String[] args) {
         boolean DEBUG = false
-        int MAX_ITERATIONS = 100000
 
         runGame(DEBUG)
     }
@@ -39,60 +38,51 @@ class SantaGame {
 
     static Card[] createCards() {
         return [
-                new Card(
-                        new SantaPart(BLUE, TORSO),
-                        new SantaPart(YELLOW, TORSO),
-                        new SantaPart(RED, TORSO),
-                        new SantaPart(GREEN, TORSO)
-                ),
-                new Card(
-                        new SantaPart(BLUE, TORSO),
-                        new SantaPart(RED, TORSO),
-                        new SantaPart(YELLOW, TORSO),
-                        new SantaPart(GREEN, TORSO)
-                ),
-                new Card(
-                        new SantaPart(BLUE, LEGS),
-                        new SantaPart(YELLOW, TORSO),
-                        new SantaPart(GREEN, TORSO),
-                        new SantaPart(RED, LEGS)
-                ),
-                new Card(
-                        new SantaPart(BLUE, TORSO),
-                        new SantaPart(GREEN, TORSO),
-                        new SantaPart(YELLOW, TORSO),
-                        new SantaPart(RED, LEGS)
-                ),
-                new Card(
-                        new SantaPart(BLUE, LEGS),
-                        new SantaPart(RED, TORSO),
-                        new SantaPart(GREEN, LEGS),
-                        new SantaPart(YELLOW, LEGS)
-                ),
-                new Card(
-                        new SantaPart(BLUE, TORSO),
-                        new SantaPart(RED, LEGS),
-                        new SantaPart(YELLOW, LEGS),
-                        new SantaPart(GREEN, TORSO)
-                ),
-                new Card(
-                        new SantaPart(BLUE, LEGS),
-                        new SantaPart(YELLOW, LEGS),
-                        new SantaPart(RED, TORSO),
-                        new SantaPart(GREEN, LEGS)
-                ),
-                new Card(
-                        new SantaPart(BLUE, LEGS),
-                        new SantaPart(GREEN, LEGS),
-                        new SantaPart(RED, TORSO),
-                        new SantaPart(YELLOW, LEGS)
-                ),
-                new Card(
-                        new SantaPart(BLUE, TORSO),
-                        new SantaPart(GREEN, LEGS),
-                        new SantaPart(YELLOW, LEGS),
-                        new SantaPart(RED, LEGS)
-                )
+                new Card([new SantaPart(BLUE, TORSO),
+                          new SantaPart(YELLOW, TORSO),
+                          new SantaPart(RED, TORSO),
+                          new SantaPart(GREEN, TORSO)] as SantaPart[],
+                        0),
+                new Card([new SantaPart(BLUE, TORSO),
+                          new SantaPart(RED, TORSO),
+                          new SantaPart(YELLOW, TORSO),
+                          new SantaPart(GREEN, TORSO)] as SantaPart[],
+                        1),
+                new Card([new SantaPart(BLUE, LEGS),
+                          new SantaPart(YELLOW, TORSO),
+                          new SantaPart(GREEN, TORSO),
+                          new SantaPart(RED, LEGS)] as SantaPart[],
+                        2),
+                new Card([new SantaPart(BLUE, TORSO),
+                          new SantaPart(GREEN, TORSO),
+                          new SantaPart(YELLOW, TORSO),
+                          new SantaPart(RED, LEGS)] as SantaPart[],
+                        3),
+                new Card([new SantaPart(BLUE, LEGS),
+                          new SantaPart(RED, TORSO),
+                          new SantaPart(GREEN, LEGS),
+                          new SantaPart(YELLOW, LEGS)] as SantaPart[],
+                        4),
+                new Card([new SantaPart(BLUE, TORSO),
+                          new SantaPart(RED, LEGS),
+                          new SantaPart(YELLOW, LEGS),
+                          new SantaPart(GREEN, TORSO)] as SantaPart[],
+                        5),
+                new Card([new SantaPart(BLUE, LEGS),
+                          new SantaPart(YELLOW, LEGS),
+                          new SantaPart(RED, TORSO),
+                          new SantaPart(GREEN, LEGS)] as SantaPart[],
+                        6),
+                new Card([new SantaPart(BLUE, LEGS),
+                          new SantaPart(GREEN, LEGS),
+                          new SantaPart(RED, TORSO),
+                          new SantaPart(YELLOW, LEGS)] as SantaPart[],
+                        7),
+                new Card([new SantaPart(BLUE, TORSO),
+                          new SantaPart(GREEN, LEGS),
+                          new SantaPart(YELLOW, LEGS),
+                          new SantaPart(RED, LEGS)] as SantaPart[],
+                        8)
         ]
     }
 }
