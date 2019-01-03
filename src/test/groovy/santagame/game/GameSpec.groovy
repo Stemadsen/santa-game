@@ -38,7 +38,7 @@ class GameSpec extends Specification {
         given:
             int i = _i as int
             int p = _p as int
-        Card card = cards[i]
+            Card card = cards[i]
 
         expect:
             !game.isOnBoard(i)
@@ -129,7 +129,7 @@ class GameSpec extends Specification {
 
     void "it should correctly return rotated card for left neighbor"() {
         given:
-        Color color = _color as Color
+            Color color = _color as Color
             game.placeOnBoard(cardWithRightPart(color), -1, 0)
 
         when:
@@ -161,7 +161,7 @@ class GameSpec extends Specification {
 
     void "test isValid for left neighbor"() {
         given: 'a first card whose right part is blue legs'
-        BodyPart bodyPart = _bodyPart as BodyPart
+            BodyPart bodyPart = _bodyPart as BodyPart
             Color color = _color as Color
             game.placeOnBoard(cardWithRightPart(BLUE, LEGS), -1, 0)
 

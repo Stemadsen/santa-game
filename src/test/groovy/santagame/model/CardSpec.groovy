@@ -28,7 +28,7 @@ class CardSpec extends Specification {
 
     def "it should correctly rotate to a specific color on the left"() {
         given:
-        Color color = _color as Color
+            Color color = _color as Color
             Card card = cards[5]
             List originalBodyParts = card.santaParts*.bodyPart
             List originalColors = card.santaParts*.color
