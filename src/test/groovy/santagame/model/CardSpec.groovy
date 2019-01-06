@@ -4,6 +4,8 @@ import santagame.game.SantaGame
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import static santagame.model.BodyPart.LEGS
+import static santagame.model.BodyPart.TORSO
 import static santagame.model.Color.GREEN
 import static santagame.model.Color.RED
 import static santagame.model.Color.BLUE
@@ -11,10 +13,10 @@ import static santagame.model.Color.YELLOW
 
 class CardSpec extends Specification {
     static final SantaPart[] TEST_SANTA_PARTS = [
-            new SantaPart(RED, BodyPart.TORSO),
-            new SantaPart(GREEN, BodyPart.LEGS),
-            new SantaPart(BLUE, BodyPart.TORSO),
-            new SantaPart(YELLOW, BodyPart.LEGS),
+            new SantaPart(RED, TORSO),
+            new SantaPart(GREEN, LEGS),
+            new SantaPart(BLUE, TORSO),
+            new SantaPart(YELLOW, LEGS),
     ]
 
     static final Card TEST_CARD = new Card(TEST_SANTA_PARTS, 4)
@@ -52,6 +54,23 @@ class CardSpec extends Specification {
             0      | 5
             -1     | 4
             9      | 4
+    }
+
+    def "two cards should be equal if and only if they have the same index and SantaParts"() {
+        given:
+            SantaPart part = new SantaPart(RED, LEGS)
+            Card card1 = new Card([part, part, part, new SantaPart(BLUE, TORSO)] as SantaPart[], 4)
+            Card card2 = new Card([part, part, part, new SantaPart(_color, _bodyPart)] as SantaPart[], _index)
+
+        expect:
+            (card1 == card2) == _expected
+
+        where:
+            _color | _bodyPart | _index | _expected
+            BLUE   | TORSO     | 4      | true
+            BLUE   | TORSO     | 5      | false
+            BLUE   | LEGS      | 4      | false
+            GREEN  | TORSO     | 4      | false
     }
 
     def "it should correctly rotate to a specific color on the left"() {

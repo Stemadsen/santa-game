@@ -1,8 +1,5 @@
 package santagame.model
 
-import groovy.transform.EqualsAndHashCode
-
-@EqualsAndHashCode
 class Card {
     private SantaPart[] santaParts // starting from right, moving counter-clockwise
     private int rotation
@@ -94,6 +91,25 @@ class Card {
     @Override
     Card clone() {
         return new Card([rightPart, upperPart, leftPart, lowerPart] as SantaPart[], index)
+    }
+
+    /**
+     * Two Cards are equal if and only if they have the same index and the same SantaParts, including position,
+     * but not necessarily order.
+     */
+    @Override
+    boolean equals(Object other) {
+        if (!(other instanceof Card)) {
+            return false
+        }
+        return other.index == index && other.rightPart == rightPart && other.upperPart == upperPart &&
+                other.leftPart == leftPart && other.lowerPart == lowerPart
+    }
+
+    @Override
+    int hashCode() {
+        return index + santaParts[0].hashCode() - santaParts[1].hashCode() +
+                santaParts[2].hashCode() - santaParts[3].hashCode()
     }
 
     @Override
