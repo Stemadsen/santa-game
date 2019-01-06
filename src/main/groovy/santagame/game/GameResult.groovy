@@ -1,9 +1,8 @@
 package santagame.game
 
-import santagame.model.Card
+import santagame.model.SolutionContainer
 
 class GameResult {
-    Iterable<Card[]> solutions = new ArrayList<Card[]>()
-    Iterable<int[]> solutionIndices = new ArrayList<int[]>()
+    SolutionContainer solutionContainer = new SolutionContainer()
     int iterations
 }

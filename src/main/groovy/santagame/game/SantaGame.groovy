@@ -30,9 +30,9 @@ class SantaGame {
         long ms = end - start
         Log.info("\nPlayed game in ${ms / 1000} seconds")
         Log.info("\nRan ${result.iterations} iterations (${(result.iterations / ms).toDouble().round(3)} iterations/ms)")
-        Log.info("\nFound ${result.solutions.size()} solutions:\n")
-        result.solutions.each {
-            Log.info("${it.toString()}")
+        Log.info("\nFound ${result.solutionContainer.solutions.size()} unique solutions:\n")
+        result.solutionContainer.solutions.each {
+            Log.info(it)
         }
     }
 

@@ -73,6 +73,59 @@ class CardSpec extends Specification {
             GREEN  | TORSO     | 4      | false
     }
 
+    def "it should rotate counter-clockwise"() {
+        given:
+            Card card = TEST_CARD
+
+        when: 'the card is rotated _degree times'
+            Card rotatedCard = (1.._degree).inject(card) { result, i -> result.rotateOnce() }
+
+        then: 'the original card was rotated'
+            rotatedCard.is(card)
+
+        and: 'as expected'
+            with(card) {
+                rotation == _degree
+                lowerPart.color == TEST_SANTA_PARTS[3 - _degree].color
+            }
+
+        where:
+            _degree << (1..3)
+    }
+
+    @Unroll
+    def "it should correctly rotate to rotation degree #_degree"() {
+        given:
+            Card card = TEST_CARD
+
+        when:
+            Card rotatedCard = card.rotateToDegrees(_degree)
+
+        then: 'the original card was rotated'
+            rotatedCard.is(card)
+
+        and: 'as expected'
+            with(card) {
+                rotation == _degree
+                lowerPart.color == TEST_SANTA_PARTS[3 - _degree].color
+                lowerPart.bodyPart == TEST_SANTA_PARTS[3 - _degree].bodyPart
+            }
+
+        where:
+            _degree << (0..3)
+    }
+
+    def "it should not rotate to a negative rotation degree"() {
+        given:
+            Card card = TEST_CARD
+
+        when:
+            card.rotateToDegrees(-1)
+
+        then:
+            thrown(AssertionError)
+    }
+
     def "it should correctly rotate to a specific color on the left"() {
         given:
             Color color = _color as Color
@@ -113,37 +166,6 @@ class CardSpec extends Specification {
 
         where:
             _color << Color.values()
-    }
-
-    @Unroll
-    def "it should correctly rotate to rotation degree #_degree"() {
-        given:
-            Card card = TEST_CARD
-
-        when:
-            Card rotatedCard = card.rotateToDegrees(_degree)
-
-        then:
-            rotatedCard == card
-            with(card) {
-                rotation == _degree
-                lowerPart.color == TEST_SANTA_PARTS[3 - _degree].color
-                lowerPart.bodyPart == TEST_SANTA_PARTS[3 - _degree].bodyPart
-            }
-
-        where:
-            _degree << (0..3)
-    }
-
-    def "it should not rotate to a negative rotation degree"() {
-        given:
-            Card card = TEST_CARD
-
-        when:
-            card.rotateToDegrees(-1)
-
-        then:
-            thrown(AssertionError)
     }
 
     def "cloning should preserve SantaParts and their order + index"() {

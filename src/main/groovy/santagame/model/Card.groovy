@@ -68,6 +68,15 @@ class Card {
         return this
     }
 
+    /**
+     * Rotates the card once counter-clockwise.
+     * @return this card.
+     */
+    Card rotateOnce() {
+        rotation = (rotation + 1) % 4
+        return this
+    }
+
     SantaPart[] getSantaParts() {
         santaParts
     }

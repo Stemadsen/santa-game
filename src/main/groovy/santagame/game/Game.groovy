@@ -1,6 +1,7 @@
 package santagame.game
 
 import santagame.model.Card
+import santagame.model.CardLayout
 import santagame.utils.Log
 
 class Game {
@@ -8,6 +9,7 @@ class Game {
     int[] nexts = new int[9] // index of the next card to try for each position
     int startingCardRotation = 0 // rotation of the card being used at position 0
     Card[] board = new Card[9]
+    GameResult gameResult = new GameResult()
 
     Game(Card[] cards) {
         assert cards.size() == 9
@@ -18,13 +20,12 @@ class Game {
         int p = 0 // position to check
         int toTry // index of the card to try next
         Card card // properly rotated card to try
-        GameResult result = new GameResult()
 
         while (nexts.any { it < 9 }) {
-            result.iterations++
-            if (result.iterations == maxIterations) {
-                Log.info("Stopping after ${result.iterations} iterations", startTime)
-                return result
+            gameResult.iterations++
+            if (gameResult.iterations == maxIterations) {
+                Log.info("Stopping after ${gameResult.iterations} iterations", startTime)
+                return gameResult
             }
 
             // First do backtracking
@@ -33,7 +34,7 @@ class Game {
                 if (p == 0) {
                     // Completely out of options
                     Log.info("All possibilities exhausted, exiting now", startTime)
-                    return result
+                    return gameResult
                 }
                 // Backtrack
                 if (debug) Log.debug("Backtracking", startTime, p, 9)
@@ -68,9 +69,12 @@ class Game {
                 placeOnBoard(card, p)
                 if (p == 8) {
                     // We just placed the last card!
-                    assert !result.solutions.contains(board): "Solution already exists!"
-                    result.solutions.add(board*.clone() as Card[])
-                    Log.info("New solution found: ${board*.index}", startTime)
+                    Log.info("Found solution: ${board*.index}", startTime)
+                    if (isKnownSolution(board)) {
+                        Log.info("Solution already found, skipping", startTime)
+                    } else {
+                        addSolution(board)
+                    }
                     removeFromBoard(8) // this is necessary since we can't do normal backtracking
                     continue
                 }
@@ -85,6 +89,14 @@ class Game {
         String warning = "[WARNING] Uncontrolled exit happened! p: $p, board: $board, nexts: $nexts"
         Log.info(warning, startTime)
         throw new RuntimeException(warning)
+    }
+
+    private void addSolution(Card[] cardSequence) {
+        gameResult.solutionContainer.add(cardSequence*.clone() as Card[])
+    }
+
+    boolean isKnownSolution(Card[] cardSequence) {
+        return gameResult.solutionContainer.contains(cardSequence)
     }
 
     /**
